@@ -1,0 +1,1543 @@
+{
+    "openapi": "3.0.1",
+    "info": {
+        "title": "Mycelium Network API",
+        "description": "The Mycelium Network API provides access to corporate entity data and their carbon emissions disclosures. Use it to search for entities by name, LEI, ISIN, BIC, registration number, and country code then retrieve their disclosure history including scope 1, 2, and 3 emissions.\n\n## Typical workflow\n\n1. **Search for an entity** \u2014 call `GET /v1/entities/search` with a name, identifier, or country code to find matching entities.\n2. **Get entity details** \u2014 use the `publicId` from the search results to call `GET /v1/entities/{id}` for the full entity profile including identifiers, addresses, and classifications.\n3. **Retrieve disclosures** \u2014 call `GET /v1/entities/{id}/disclosures` to get the entity's carbon emissions disclosures, optionally filtered by reporting year.\n4. **Get disclosure detail** \u2014 use a disclosure `publicId` to call `GET /v1/disclosures/{id}` for the full breakdown of emissions by scope.",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "https://api.mycelium.global/"
+        }
+    ],
+    "paths": {
+        "/v{version}/Disclosures/{id}": {
+            "get": {
+                "tags": [
+                    "Disclosures"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    },
+                    {
+                        "name": "version",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "maxLength": 20,
+                            "minLength": 0,
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DisclosureDto"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DisclosureDto"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DisclosureDto"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetails"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetails"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetails"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetails"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetails"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetails"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v{version}/Disclosures/Count": {
+            "get": {
+                "tags": [
+                    "Disclosures"
+                ],
+                "parameters": [
+                    {
+                        "name": "version",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "maxLength": 20,
+                            "minLength": 0,
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "maximum": 10,
+                                    "minimum": 0,
+                                    "type": "integer",
+                                    "format": "int32"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "maximum": 10,
+                                    "minimum": 0,
+                                    "type": "integer",
+                                    "format": "int32"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "maximum": 10,
+                                    "minimum": 0,
+                                    "type": "integer",
+                                    "format": "int32"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetails"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetails"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetails"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v{version}/Entities/{id}": {
+            "get": {
+                "tags": [
+                    "Entities"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    },
+                    {
+                        "name": "version",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "maxLength": 20,
+                            "minLength": 0,
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/EntityDto"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/EntityDto"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/EntityDto"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetails"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetails"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetails"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetails"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetails"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetails"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v{version}/Entities/search": {
+            "get": {
+                "tags": [
+                    "Entities"
+                ],
+                "parameters": [
+                    {
+                        "name": "LEI",
+                        "in": "query",
+                        "schema": {
+                            "maxLength": 20,
+                            "minLength": 0,
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "ISIN",
+                        "in": "query",
+                        "schema": {
+                            "maxLength": 12,
+                            "minLength": 0,
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "BIC",
+                        "in": "query",
+                        "schema": {
+                            "maxLength": 12,
+                            "minLength": 8,
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "CountryCode",
+                        "in": "query",
+                        "schema": {
+                            "maxLength": 3,
+                            "minLength": 0,
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "RegistrationNumber",
+                        "in": "query",
+                        "schema": {
+                            "maxLength": 50,
+                            "minLength": 0,
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "Name",
+                        "in": "query",
+                        "schema": {
+                            "maxLength": 255,
+                            "minLength": 0,
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "ClassificationSystem",
+                        "in": "query",
+                        "schema": {
+                            "maxLength": 50,
+                            "minLength": 0,
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "ClassificationDescription",
+                        "in": "query",
+                        "schema": {
+                            "maxLength": 255,
+                            "minLength": 0,
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "ClassificationCode",
+                        "in": "query",
+                        "schema": {
+                            "maxLength": 20,
+                            "minLength": 0,
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "OnlyWithIntensity",
+                        "in": "query",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "name": "PageSize",
+                        "in": "query",
+                        "schema": {
+                            "maximum": 100,
+                            "minimum": 1,
+                            "type": "integer",
+                            "format": "int32"
+                        }
+                    },
+                    {
+                        "name": "Page",
+                        "in": "query",
+                        "schema": {
+                            "maximum": 10,
+                            "minimum": 0,
+                            "type": "integer",
+                            "format": "int32"
+                        }
+                    },
+                    {
+                        "name": "version",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "maxLength": 20,
+                            "minLength": 0,
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PagedResponseDtoOfEntitySummaryDto"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PagedResponseDtoOfEntitySummaryDto"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PagedResponseDtoOfEntitySummaryDto"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetails"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetails"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetails"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v{version}/Entities/{id}/disclosures": {
+            "get": {
+                "tags": [
+                    "Entities"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    },
+                    {
+                        "name": "Year",
+                        "in": "query",
+                        "schema": {
+                            "maximum": 2100,
+                            "minimum": 2000,
+                            "type": "integer",
+                            "format": "int32"
+                        }
+                    },
+                    {
+                        "name": "PageSize",
+                        "in": "query",
+                        "schema": {
+                            "maximum": 100,
+                            "minimum": 1,
+                            "type": "integer",
+                            "format": "int32"
+                        }
+                    },
+                    {
+                        "name": "Page",
+                        "in": "query",
+                        "schema": {
+                            "maximum": 10,
+                            "minimum": 0,
+                            "type": "integer",
+                            "format": "int32"
+                        }
+                    },
+                    {
+                        "name": "version",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "maxLength": 20,
+                            "minLength": 0,
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PagedResponseDtoOfDisclosureDto"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PagedResponseDtoOfDisclosureDto"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PagedResponseDtoOfDisclosureDto"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetails"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetails"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetails"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetails"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetails"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetails"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "AddressDto": {
+                "type": "object",
+                "properties": {
+                    "address1": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "address2": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "address3": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "postTown": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "countyField": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "postCode": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "country": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "countryCode": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "addressType": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                }
+            },
+            "Aspects": {
+                "enum": [
+                    "NotDefined",
+                    "PurchasedGoodsAndServices",
+                    "CapitalGoods",
+                    "FuelAndEnergyRelatedActivities",
+                    "UpstreamTransportationAndDistribution",
+                    "WasteGeneratedInOperations",
+                    "BusinessTravel",
+                    "EmployeeCommuting",
+                    "UpstreamLeasedAssets",
+                    "DownstreamTransportationAndDistribution",
+                    "ProcessingOfSoldProducts",
+                    "UseOfSoldProducts",
+                    "EndOfLifeTreatmentOfSoldProducts",
+                    "DownstreamLeasedAssets",
+                    "Franchises",
+                    "Investments",
+                    "Other",
+                    "StationaryCombustion",
+                    "MobileCombustion",
+                    "FugitiveEmissions",
+                    "ProcessEmissions",
+                    "Electricity",
+                    "SteamHeatingCooling",
+                    "ChilledWater",
+                    "Heat",
+                    "OtherUpstream",
+                    "OtherDownstream"
+                ],
+                "type": "string"
+            },
+            "Bases": {
+                "enum": [
+                    "None",
+                    "FromFilling",
+                    "Estimated",
+                    "Derived",
+                    "Human",
+                    "NotApplicable"
+                ],
+                "type": "string"
+            },
+            "ClassificationDto": {
+                "type": "object",
+                "properties": {
+                    "system": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "code": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "description": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                }
+            },
+            "ClassificationRefDto": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "description": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "nullable": true
+            },
+            "DisclosureDto": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "publicId": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "scoringInputsChanged": {
+                        "type": "boolean"
+                    },
+                    "entityId": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "year": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "isUnderReview": {
+                        "type": "boolean"
+                    },
+                    "score": {
+                        "$ref": "#/components/schemas/DisclosureScoringDto"
+                    },
+                    "revenue": {
+                        "$ref": "#/components/schemas/RevenueFirmographicDto"
+                    },
+                    "employees": {
+                        "$ref": "#/components/schemas/EmployeesFirmographicDto"
+                    },
+                    "total": {
+                        "$ref": "#/components/schemas/DisclosureTotalDto"
+                    },
+                    "unit": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "sourceType": {
+                        "$ref": "#/components/schemas/DisclosureSourceType"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "sourceId": {
+                        "type": "integer",
+                        "format": "int32",
+                        "nullable": true
+                    },
+                    "emissions": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/DisclosureEmissionDto"
+                        },
+                        "nullable": true
+                    },
+                    "intensities": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/DisclosureIntensityDto"
+                        },
+                        "nullable": true
+                    },
+                    "sourceDocumentUrl": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "sourceDocumentPath": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "sourceReportId": {
+                        "type": "integer",
+                        "format": "int32",
+                        "nullable": true
+                    },
+                    "sourceDocumentType": {
+                        "$ref": "#/components/schemas/NullableOfReportType"
+                    },
+                    "sourceDocumentPages": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/DisclosureSourcePageDto"
+                        },
+                        "nullable": true
+                    },
+                    "reportedBy": {
+                        "$ref": "#/components/schemas/DisclosureReportedByDto"
+                    },
+                    "netZeroTargetYear": {
+                        "type": "integer",
+                        "format": "int32",
+                        "nullable": true
+                    },
+                    "nearTermTargetYear": {
+                        "type": "integer",
+                        "format": "int32",
+                        "nullable": true
+                    },
+                    "nearTermReductionPercent": {
+                        "type": "number",
+                        "format": "double",
+                        "nullable": true
+                    },
+                    "nearTermBaselineYear": {
+                        "type": "integer",
+                        "format": "int32",
+                        "nullable": true
+                    },
+                    "hasVerifiedAudit": {
+                        "type": "boolean",
+                        "nullable": true
+                    },
+                    "auditorName": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "assuranceLevel": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "isSharedSource": {
+                        "type": "boolean"
+                    },
+                    "sharedSourceEntity": {
+                        "$ref": "#/components/schemas/EntitySummaryDto2"
+                    },
+                    "visibility": {
+                        "$ref": "#/components/schemas/DisclosureVisibility"
+                    },
+                    "privateToOrganisationId": {
+                        "type": "integer",
+                        "format": "int32",
+                        "nullable": true
+                    },
+                    "privateToOrganisationIds": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "scope3DetailMode": {
+                        "type": "string"
+                    }
+                }
+            },
+            "DisclosureEmissionDto": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "scope": {
+                        "$ref": "#/components/schemas/Scopes"
+                    },
+                    "aspect": {
+                        "$ref": "#/components/schemas/Aspects"
+                    },
+                    "basis": {
+                        "$ref": "#/components/schemas/Bases"
+                    },
+                    "methodology": {
+                        "$ref": "#/components/schemas/Methodologies"
+                    },
+                    "amount": {
+                        "type": "number",
+                        "format": "double"
+                    },
+                    "sourcePage": {
+                        "type": "integer",
+                        "format": "int32",
+                        "nullable": true
+                    }
+                }
+            },
+            "DisclosureIntensityDto": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "$ref": "#/components/schemas/IntensityType"
+                    },
+                    "value": {
+                        "type": "number",
+                        "format": "double"
+                    },
+                    "emissions": {
+                        "type": "number",
+                        "format": "double"
+                    },
+                    "revenue": {
+                        "type": "number",
+                        "format": "double"
+                    },
+                    "revenueYear": {
+                        "type": "integer",
+                        "format": "int32"
+                    }
+                }
+            },
+            "DisclosureReportedByDto": {
+                "type": "object",
+                "properties": {
+                    "entity": {
+                        "$ref": "#/components/schemas/EntitySummaryDto"
+                    },
+                    "ownershipChain": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/OwnershipChainHopDto"
+                        }
+                    }
+                },
+                "nullable": true
+            },
+            "DisclosureScoringDto": {
+                "type": "object",
+                "properties": {
+                    "transparency": {
+                        "type": "number",
+                        "format": "double",
+                        "nullable": true
+                    },
+                    "benchmark": {
+                        "type": "number",
+                        "format": "double",
+                        "nullable": true
+                    },
+                    "intesity": {
+                        "type": "number",
+                        "format": "double",
+                        "nullable": true
+                    },
+                    "industry": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "revenue": {
+                        "type": "number",
+                        "format": "double",
+                        "nullable": true
+                    },
+                    "employees": {
+                        "type": "integer",
+                        "format": "int32",
+                        "nullable": true
+                    }
+                },
+                "nullable": true
+            },
+            "DisclosureSourcePageDto": {
+                "type": "object",
+                "properties": {
+                    "page": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "imageId": {
+                        "type": "integer",
+                        "format": "int32",
+                        "nullable": true
+                    },
+                    "imageUrl": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "scopes": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer",
+                            "format": "int32"
+                        },
+                        "nullable": true
+                    },
+                    "isScoped": {
+                        "type": "boolean"
+                    }
+                }
+            },
+            "DisclosureSourceType": {
+                "enum": [
+                    "Unknown",
+                    "FromFilling",
+                    "Submitted"
+                ],
+                "type": "string"
+            },
+            "DisclosureTotalDto": {
+                "type": "object",
+                "properties": {
+                    "value": {
+                        "type": "number",
+                        "format": "double",
+                        "nullable": true
+                    },
+                    "fromFilling": {
+                        "type": "number",
+                        "format": "double",
+                        "nullable": true
+                    },
+                    "reported": {
+                        "type": "number",
+                        "format": "double",
+                        "nullable": true
+                    },
+                    "estimated": {
+                        "type": "number",
+                        "format": "double",
+                        "nullable": true
+                    },
+                    "derived": {
+                        "type": "number",
+                        "format": "double",
+                        "nullable": true
+                    }
+                },
+                "nullable": true
+            },
+            "DisclosureVisibility": {
+                "enum": [
+                    "Public",
+                    "PrivateToRequester"
+                ],
+                "type": "string"
+            },
+            "EmployeesFirmographicDto": {
+                "type": "object",
+                "properties": {
+                    "value": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "year": {
+                        "type": "integer",
+                        "format": "int32"
+                    }
+                },
+                "nullable": true
+            },
+            "EntityClassificationLabelDto": {
+                "type": "object",
+                "properties": {
+                    "system": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "code": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "description": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                }
+            },
+            "EntityDto": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "publicId": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "identifiers": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/IdentifierDto"
+                        },
+                        "nullable": true
+                    },
+                    "classifications": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ClassificationDto"
+                        },
+                        "nullable": true
+                    },
+                    "registration": {
+                        "$ref": "#/components/schemas/EntityRegistrationDto"
+                    },
+                    "myceliumBenchmark": {
+                        "$ref": "#/components/schemas/ClassificationRefDto"
+                    },
+                    "primaryIndustry": {
+                        "$ref": "#/components/schemas/ClassificationRefDto"
+                    },
+                    "interpolation": {
+                        "$ref": "#/components/schemas/ClassificationRefDto"
+                    },
+                    "legalName": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "tradingName": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "phone": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "website": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "description": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "email": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "addresses": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/AddressDto"
+                        },
+                        "nullable": true
+                    },
+                    "otherNames": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/OtherNameDto"
+                        },
+                        "nullable": true
+                    },
+                    "slug": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "canonicalSlug": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "sbti": {
+                        "$ref": "#/components/schemas/SbtiDto"
+                    }
+                }
+            },
+            "EntityIntensityDto": {
+                "type": "object",
+                "properties": {
+                    "totalReported": {
+                        "type": "number",
+                        "format": "double",
+                        "nullable": true
+                    },
+                    "totalModelled": {
+                        "type": "number",
+                        "format": "double",
+                        "nullable": true
+                    },
+                    "upstreamReported": {
+                        "type": "number",
+                        "format": "double",
+                        "nullable": true
+                    },
+                    "upstreamModelled": {
+                        "type": "number",
+                        "format": "double",
+                        "nullable": true
+                    },
+                    "scope1And2Reported": {
+                        "type": "number",
+                        "format": "double",
+                        "nullable": true
+                    },
+                    "scope1And2Modelled": {
+                        "type": "number",
+                        "format": "double",
+                        "nullable": true
+                    }
+                },
+                "nullable": true
+            },
+            "EntityRegistrationDto": {
+                "type": "object",
+                "properties": {
+                    "registrationNumber": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "jurisdiction": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "nullable": true
+            },
+            "EntitySummaryDto": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "publicId": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "legalName": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "tradingName": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "registration": {
+                        "$ref": "#/components/schemas/EntityRegistrationDto"
+                    },
+                    "website": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "lei": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "isin": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "bic": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "myceliumScore": {
+                        "type": "number",
+                        "format": "double",
+                        "nullable": true
+                    },
+                    "intensity": {
+                        "$ref": "#/components/schemas/EntityIntensityDto"
+                    },
+                    "classifications": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/EntityClassificationLabelDto"
+                        },
+                        "nullable": true
+                    }
+                }
+            },
+            "EntitySummaryDto2": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "publicId": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "legalName": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "tradingName": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "registration": {
+                        "nullable": true
+                    },
+                    "website": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "lei": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "isin": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "bic": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "myceliumScore": {
+                        "type": "number",
+                        "format": "double",
+                        "nullable": true
+                    },
+                    "intensity": {
+                        "nullable": true
+                    },
+                    "classifications": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/EntityClassificationLabelDto"
+                        },
+                        "nullable": true
+                    }
+                },
+                "nullable": true
+            },
+            "IdentifierDto": {
+                "type": "object",
+                "properties": {
+                    "source": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "description": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                }
+            },
+            "IntensityType": {
+                "enum": [
+                    "None",
+                    "UpstreamModelled",
+                    "UpstreamReported",
+                    "TotalReported",
+                    "TotalModelled",
+                    "Scope1And2Modelled",
+                    "Scope1And2Reported"
+                ],
+                "type": "string"
+            },
+            "Methodologies": {
+                "enum": [
+                    "NotDefined",
+                    "Unknown",
+                    "MarketBased",
+                    "LocationBased"
+                ],
+                "type": "string"
+            },
+            "NullableOfRelationshipTypes": {
+                "enum": [
+                    "IS_DIRECTLY_CONSOLIDATED_BY",
+                    "IS_ULTIMATELY_CONSOLIDATED_BY",
+                    "IS_INTERNATIONAL_BRANCH_OF",
+                    "IS_FUND_MANAGED_BY",
+                    "IS_SUBFUND_OF",
+                    "IS_FEEDER_TO"
+                ],
+                "type": "string",
+                "nullable": true
+            },
+            "NullableOfReportType": {
+                "enum": [
+                    "Sustainability",
+                    "Cdp",
+                    "Esg",
+                    "Environmental",
+                    "Responsibility",
+                    "Annual",
+                    "Financial",
+                    "CarbonReductionPlan",
+                    "Unknown",
+                    "Other"
+                ],
+                "type": "string",
+                "nullable": true
+            },
+            "OtherNameDto": {
+                "type": "object",
+                "properties": {
+                    "description": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "source": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                }
+            },
+            "OwnershipChainHopDto": {
+                "type": "object",
+                "properties": {
+                    "entity": {
+                        "$ref": "#/components/schemas/EntitySummaryDto"
+                    },
+                    "relationshipType": {
+                        "$ref": "#/components/schemas/NullableOfRelationshipTypes"
+                    },
+                    "ownershipPercentage": {
+                        "type": "number",
+                        "format": "double",
+                        "nullable": true
+                    }
+                }
+            },
+            "PagedResponseDtoOfDisclosureDto": {
+                "type": "object",
+                "properties": {
+                    "total": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "page": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "pageSize": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "results": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/DisclosureDto"
+                        },
+                        "nullable": true
+                    }
+                }
+            },
+            "PagedResponseDtoOfEntitySummaryDto": {
+                "type": "object",
+                "properties": {
+                    "total": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "page": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "pageSize": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "results": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/EntitySummaryDto"
+                        },
+                        "nullable": true
+                    }
+                }
+            },
+            "ProblemDetails": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "title": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "status": {
+                        "type": "integer",
+                        "format": "int32",
+                        "nullable": true
+                    },
+                    "detail": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "instance": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                }
+            },
+            "RevenueFirmographicDto": {
+                "type": "object",
+                "properties": {
+                    "value": {
+                        "type": "number",
+                        "format": "double"
+                    },
+                    "year": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "currency": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "nullable": true
+            },
+            "SbtiDto": {
+                "type": "object",
+                "properties": {
+                    "nearTermStatus": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "nearTermClassification": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "nearTermTargetYear": {
+                        "type": "integer",
+                        "format": "int32",
+                        "nullable": true
+                    },
+                    "longTermStatus": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "longTermTargetYear": {
+                        "type": "integer",
+                        "format": "int32",
+                        "nullable": true
+                    },
+                    "netZeroStatus": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "netZeroYear": {
+                        "type": "integer",
+                        "format": "int32",
+                        "nullable": true
+                    },
+                    "dateUpdated": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    }
+                },
+                "nullable": true
+            },
+            "Scopes": {
+                "enum": [
+                    "Unknown",
+                    "Scope1",
+                    "Scope2",
+                    "Scope3",
+                    "Other"
+                ],
+                "type": "string"
+            }
+        },
+        "securitySchemes": {
+            "ApiKey": {
+                "type": "apiKey",
+                "description": "All API requests require an API key passed in the `X-Api-Key` header. Keys are issued per-user and subject to daily rate limits. Contact the Mycelium team to request access.",
+                "name": "X-Api-Key",
+                "in": "header"
+            }
+        }
+    },
+    "security": [
+        {
+            "ApiKey": []
+        }
+    ],
+    "tags": [
+        {
+            "name": "Entities",
+            "description": "Search and retrieve corporate entities. Each entity represents a legal body. Entities can be looked up by name, LEI, ISIN, BIC, registration number, or country code. The full entity profile includes identifiers, registered addresses, classifications, and alternative names."
+        },
+        {
+            "name": "Disclosures",
+            "description": "Access carbon emissions disclosures. A disclosure represents a single reporting period's emissions data for an entity, broken down by scope (1, 2, and 3). Disclosures can be retrieved for a specific entity via the entities endpoint, or looked up directly by their public id. All emissions values are in kgCO2e."
+        }
+    ]
+}
