@@ -2,20 +2,23 @@
     "openapi": "3.0.1",
     "info": {
         "title": "Mycelium Network API",
-        "description": "The Mycelium Network API provides access to corporate entity data and their carbon emissions disclosures. Use it to search for entities by name, LEI, ISIN, BIC, registration number, and country code then retrieve their disclosure history including scope 1, 2, and 3 emissions.\n\n## Typical workflow\n\n1. **Search for an entity** \u2014 call `GET /v1/entities/search` with a name, identifier, or country code to find matching entities.\n2. **Get entity details** \u2014 use the `publicId` from the search results to call `GET /v1/entities/{id}` for the full entity profile including identifiers, addresses, and classifications.\n3. **Retrieve disclosures** \u2014 call `GET /v1/entities/{id}/disclosures` to get the entity's carbon emissions disclosures, optionally filtered by reporting year.\n4. **Get disclosure detail** \u2014 use a disclosure `publicId` to call `GET /v1/disclosures/{id}` for the full breakdown of emissions by scope.",
+        "description": "The Mycelium Network API provides access to corporate entity data and their carbon emissions disclosures. Use it to search for entities by name, LEI, ISIN, BIC, registration number, and country code then retrieve their disclosure history including scope 1, 2, and 3 emissions.\n\n## Typical workflow\n\n1. **Search for an entity** \u2014 call `GET /v1/entities/search` with a name, identifier, or country code to find matching entities.\n2. **Get entity details** \u2014 use the `id` from the search results to call `GET /v1/entities/{id}` for the full entity profile including identifiers, addresses, and classifications.\n3. **Retrieve disclosures** \u2014 call `GET /v1/entities/{id}/disclosures` to get the entity's carbon emissions disclosures, optionally filtered by reporting year.\n4. **Get disclosure detail** \u2014 use a disclosure `id` to call `GET /v1/disclosures/{id}` for the full breakdown of emissions by scope.",
         "version": "1.0.0"
     },
     "servers": [
         {
-            "url": "https://api.mycelium.global/"
+            "url": "https://api.mycelium.global"
         }
     ],
     "paths": {
-        "/v{version}/Disclosures/{id}": {
+        "/v1/disclosures/{id}": {
             "get": {
                 "tags": [
                     "Disclosures"
                 ],
+                "summary": "Get a disclosure by id",
+                "description": "Retrieve one disclosure by its public id (a UUID): the full per-scope emissions breakdown for a single reporting period, with provenance and scoring.",
+                "operationId": "getDisclosure",
                 "parameters": [
                     {
                         "name": "id",
@@ -24,16 +27,6 @@
                         "schema": {
                             "type": "string",
                             "format": "uuid"
-                        }
-                    },
-                    {
-                        "name": "version",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "maxLength": 20,
-                            "minLength": 0,
-                            "type": "string"
                         }
                     }
                 ],
@@ -44,16 +37,367 @@
                             "text/plain": {
                                 "schema": {
                                     "$ref": "#/components/schemas/DisclosureDto"
+                                },
+                                "example": {
+                                    "id": "1184f592-31cc-4251-a955-56afc9cf8748",
+                                    "year": 2025,
+                                    "isUnderReview": false,
+                                    "score": {
+                                        "transparency": 91.96,
+                                        "benchmark": 2.76,
+                                        "intesity": 1.0936067054,
+                                        "industry": null,
+                                        "revenue": 69916000000,
+                                        "employees": 336440
+                                    },
+                                    "revenue": {
+                                        "value": 69916000000,
+                                        "year": 2025,
+                                        "currency": "GBP"
+                                    },
+                                    "employees": {
+                                        "value": 336440,
+                                        "year": 2025
+                                    },
+                                    "total": {
+                                        "value": 72519022000,
+                                        "fromFilling": 73101320000,
+                                        "reported": null,
+                                        "estimated": 3941584416,
+                                        "derived": null
+                                    },
+                                    "unit": "kgCO2e",
+                                    "sourceType": "FromFilling",
+                                    "createdAt": "06/18/2026 22:51:46",
+                                    "updatedAt": "08/15/2026 00:06:10",
+                                    "emissions": [
+                                        {
+                                            "scope": "Scope1",
+                                            "aspect": "NotDefined",
+                                            "basis": "FromFilling",
+                                            "methodology": "NotDefined",
+                                            "amount": 802425000
+                                        },
+                                        {
+                                            "scope": "Scope2",
+                                            "aspect": "NotDefined",
+                                            "basis": "FromFilling",
+                                            "methodology": "MarketBased",
+                                            "amount": 5497000
+                                        },
+                                        {
+                                            "scope": "Scope2",
+                                            "aspect": "NotDefined",
+                                            "basis": "FromFilling",
+                                            "methodology": "LocationBased",
+                                            "amount": 582298000
+                                        },
+                                        {
+                                            "scope": "Scope3",
+                                            "aspect": "PurchasedGoodsAndServices",
+                                            "basis": "FromFilling",
+                                            "methodology": "NotDefined",
+                                            "amount": 35307300000
+                                        },
+                                        {
+                                            "scope": "Scope3",
+                                            "aspect": "FuelAndEnergyRelatedActivities",
+                                            "basis": "FromFilling",
+                                            "methodology": "NotDefined",
+                                            "amount": 3801200000
+                                        },
+                                        {
+                                            "scope": "Scope3",
+                                            "aspect": "UseOfSoldProducts",
+                                            "basis": "FromFilling",
+                                            "methodology": "NotDefined",
+                                            "amount": 25438800000
+                                        }
+                                    ],
+                                    "intensities": [
+                                        {
+                                            "type": "TotalReported",
+                                            "value": 1.0372307054,
+                                            "emissions": 72519022000,
+                                            "revenue": 69916000000,
+                                            "revenueYear": 2025
+                                        },
+                                        {
+                                            "type": "TotalModelled",
+                                            "value": 1.0936067054,
+                                            "emissions": 76460606416,
+                                            "revenue": 69916000000,
+                                            "revenueYear": 2025
+                                        },
+                                        {
+                                            "type": "Scope1And2Reported",
+                                            "value": 0.0115556096,
+                                            "emissions": 807922000,
+                                            "revenue": 69916000000,
+                                            "revenueYear": 2025
+                                        }
+                                    ],
+                                    "sourceDocumentUrl": null,
+                                    "sourceDocumentPath": null,
+                                    "sourceReportId": null,
+                                    "sourceDocumentType": null,
+                                    "sourceDocumentPages": null,
+                                    "reportedBy": null,
+                                    "netZeroTargetYear": null,
+                                    "nearTermTargetYear": null,
+                                    "nearTermReductionPercent": null,
+                                    "nearTermBaselineYear": null,
+                                    "hasVerifiedAudit": null,
+                                    "auditorName": null,
+                                    "assuranceLevel": null,
+                                    "isSharedSource": false,
+                                    "sharedSourceEntity": null,
+                                    "visibility": "Public",
+                                    "scope3DetailMode": "full"
                                 }
                             },
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/DisclosureDto"
+                                },
+                                "example": {
+                                    "id": "1184f592-31cc-4251-a955-56afc9cf8748",
+                                    "year": 2025,
+                                    "isUnderReview": false,
+                                    "score": {
+                                        "transparency": 91.96,
+                                        "benchmark": 2.76,
+                                        "intesity": 1.0936067054,
+                                        "industry": null,
+                                        "revenue": 69916000000,
+                                        "employees": 336440
+                                    },
+                                    "revenue": {
+                                        "value": 69916000000,
+                                        "year": 2025,
+                                        "currency": "GBP"
+                                    },
+                                    "employees": {
+                                        "value": 336440,
+                                        "year": 2025
+                                    },
+                                    "total": {
+                                        "value": 72519022000,
+                                        "fromFilling": 73101320000,
+                                        "reported": null,
+                                        "estimated": 3941584416,
+                                        "derived": null
+                                    },
+                                    "unit": "kgCO2e",
+                                    "sourceType": "FromFilling",
+                                    "createdAt": "06/18/2026 22:51:46",
+                                    "updatedAt": "08/15/2026 00:06:10",
+                                    "emissions": [
+                                        {
+                                            "scope": "Scope1",
+                                            "aspect": "NotDefined",
+                                            "basis": "FromFilling",
+                                            "methodology": "NotDefined",
+                                            "amount": 802425000
+                                        },
+                                        {
+                                            "scope": "Scope2",
+                                            "aspect": "NotDefined",
+                                            "basis": "FromFilling",
+                                            "methodology": "MarketBased",
+                                            "amount": 5497000
+                                        },
+                                        {
+                                            "scope": "Scope2",
+                                            "aspect": "NotDefined",
+                                            "basis": "FromFilling",
+                                            "methodology": "LocationBased",
+                                            "amount": 582298000
+                                        },
+                                        {
+                                            "scope": "Scope3",
+                                            "aspect": "PurchasedGoodsAndServices",
+                                            "basis": "FromFilling",
+                                            "methodology": "NotDefined",
+                                            "amount": 35307300000
+                                        },
+                                        {
+                                            "scope": "Scope3",
+                                            "aspect": "FuelAndEnergyRelatedActivities",
+                                            "basis": "FromFilling",
+                                            "methodology": "NotDefined",
+                                            "amount": 3801200000
+                                        },
+                                        {
+                                            "scope": "Scope3",
+                                            "aspect": "UseOfSoldProducts",
+                                            "basis": "FromFilling",
+                                            "methodology": "NotDefined",
+                                            "amount": 25438800000
+                                        }
+                                    ],
+                                    "intensities": [
+                                        {
+                                            "type": "TotalReported",
+                                            "value": 1.0372307054,
+                                            "emissions": 72519022000,
+                                            "revenue": 69916000000,
+                                            "revenueYear": 2025
+                                        },
+                                        {
+                                            "type": "TotalModelled",
+                                            "value": 1.0936067054,
+                                            "emissions": 76460606416,
+                                            "revenue": 69916000000,
+                                            "revenueYear": 2025
+                                        },
+                                        {
+                                            "type": "Scope1And2Reported",
+                                            "value": 0.0115556096,
+                                            "emissions": 807922000,
+                                            "revenue": 69916000000,
+                                            "revenueYear": 2025
+                                        }
+                                    ],
+                                    "sourceDocumentUrl": null,
+                                    "sourceDocumentPath": null,
+                                    "sourceReportId": null,
+                                    "sourceDocumentType": null,
+                                    "sourceDocumentPages": null,
+                                    "reportedBy": null,
+                                    "netZeroTargetYear": null,
+                                    "nearTermTargetYear": null,
+                                    "nearTermReductionPercent": null,
+                                    "nearTermBaselineYear": null,
+                                    "hasVerifiedAudit": null,
+                                    "auditorName": null,
+                                    "assuranceLevel": null,
+                                    "isSharedSource": false,
+                                    "sharedSourceEntity": null,
+                                    "visibility": "Public",
+                                    "scope3DetailMode": "full"
                                 }
                             },
                             "text/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/DisclosureDto"
+                                },
+                                "example": {
+                                    "id": "1184f592-31cc-4251-a955-56afc9cf8748",
+                                    "year": 2025,
+                                    "isUnderReview": false,
+                                    "score": {
+                                        "transparency": 91.96,
+                                        "benchmark": 2.76,
+                                        "intesity": 1.0936067054,
+                                        "industry": null,
+                                        "revenue": 69916000000,
+                                        "employees": 336440
+                                    },
+                                    "revenue": {
+                                        "value": 69916000000,
+                                        "year": 2025,
+                                        "currency": "GBP"
+                                    },
+                                    "employees": {
+                                        "value": 336440,
+                                        "year": 2025
+                                    },
+                                    "total": {
+                                        "value": 72519022000,
+                                        "fromFilling": 73101320000,
+                                        "reported": null,
+                                        "estimated": 3941584416,
+                                        "derived": null
+                                    },
+                                    "unit": "kgCO2e",
+                                    "sourceType": "FromFilling",
+                                    "createdAt": "06/18/2026 22:51:46",
+                                    "updatedAt": "08/15/2026 00:06:10",
+                                    "emissions": [
+                                        {
+                                            "scope": "Scope1",
+                                            "aspect": "NotDefined",
+                                            "basis": "FromFilling",
+                                            "methodology": "NotDefined",
+                                            "amount": 802425000
+                                        },
+                                        {
+                                            "scope": "Scope2",
+                                            "aspect": "NotDefined",
+                                            "basis": "FromFilling",
+                                            "methodology": "MarketBased",
+                                            "amount": 5497000
+                                        },
+                                        {
+                                            "scope": "Scope2",
+                                            "aspect": "NotDefined",
+                                            "basis": "FromFilling",
+                                            "methodology": "LocationBased",
+                                            "amount": 582298000
+                                        },
+                                        {
+                                            "scope": "Scope3",
+                                            "aspect": "PurchasedGoodsAndServices",
+                                            "basis": "FromFilling",
+                                            "methodology": "NotDefined",
+                                            "amount": 35307300000
+                                        },
+                                        {
+                                            "scope": "Scope3",
+                                            "aspect": "FuelAndEnergyRelatedActivities",
+                                            "basis": "FromFilling",
+                                            "methodology": "NotDefined",
+                                            "amount": 3801200000
+                                        },
+                                        {
+                                            "scope": "Scope3",
+                                            "aspect": "UseOfSoldProducts",
+                                            "basis": "FromFilling",
+                                            "methodology": "NotDefined",
+                                            "amount": 25438800000
+                                        }
+                                    ],
+                                    "intensities": [
+                                        {
+                                            "type": "TotalReported",
+                                            "value": 1.0372307054,
+                                            "emissions": 72519022000,
+                                            "revenue": 69916000000,
+                                            "revenueYear": 2025
+                                        },
+                                        {
+                                            "type": "TotalModelled",
+                                            "value": 1.0936067054,
+                                            "emissions": 76460606416,
+                                            "revenue": 69916000000,
+                                            "revenueYear": 2025
+                                        },
+                                        {
+                                            "type": "Scope1And2Reported",
+                                            "value": 0.0115556096,
+                                            "emissions": 807922000,
+                                            "revenue": 69916000000,
+                                            "revenueYear": 2025
+                                        }
+                                    ],
+                                    "sourceDocumentUrl": null,
+                                    "sourceDocumentPath": null,
+                                    "sourceReportId": null,
+                                    "sourceDocumentType": null,
+                                    "sourceDocumentPages": null,
+                                    "reportedBy": null,
+                                    "netZeroTargetYear": null,
+                                    "nearTermTargetYear": null,
+                                    "nearTermReductionPercent": null,
+                                    "nearTermBaselineYear": null,
+                                    "hasVerifiedAudit": null,
+                                    "auditorName": null,
+                                    "assuranceLevel": null,
+                                    "isSharedSource": false,
+                                    "sharedSourceEntity": null,
+                                    "visibility": "Public",
+                                    "scope3DetailMode": "full"
                                 }
                             }
                         }
@@ -101,49 +445,40 @@
                 }
             }
         },
-        "/v{version}/Disclosures/Count": {
+        "/v1/disclosures/count": {
             "get": {
                 "tags": [
                     "Disclosures"
                 ],
-                "parameters": [
-                    {
-                        "name": "version",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "maxLength": 20,
-                            "minLength": 0,
-                            "type": "string"
-                        }
-                    }
-                ],
+                "summary": "Get the total disclosure count",
+                "description": "Retrieve the total number of disclosures currently in the database.",
+                "operationId": "getDisclosureCount",
                 "responses": {
                     "200": {
                         "description": "OK",
                         "content": {
                             "text/plain": {
                                 "schema": {
-                                    "maximum": 10,
-                                    "minimum": 0,
-                                    "type": "integer",
-                                    "format": "int32"
+                                    "$ref": "#/components/schemas/DisclosureCountDto"
+                                },
+                                "example": {
+                                    "count": 14586
                                 }
                             },
                             "application/json": {
                                 "schema": {
-                                    "maximum": 10,
-                                    "minimum": 0,
-                                    "type": "integer",
-                                    "format": "int32"
+                                    "$ref": "#/components/schemas/DisclosureCountDto"
+                                },
+                                "example": {
+                                    "count": 14586
                                 }
                             },
                             "text/json": {
                                 "schema": {
-                                    "maximum": 10,
-                                    "minimum": 0,
-                                    "type": "integer",
-                                    "format": "int32"
+                                    "$ref": "#/components/schemas/DisclosureCountDto"
+                                },
+                                "example": {
+                                    "count": 14586
                                 }
                             }
                         }
@@ -171,11 +506,14 @@
                 }
             }
         },
-        "/v{version}/Entities/{id}": {
+        "/v1/entities/{id}": {
             "get": {
                 "tags": [
                     "Entities"
                 ],
+                "summary": "Get an entity by id",
+                "description": "Retrieve the full profile for one entity by its public id (a UUID returned by the search endpoint): identifiers, registration, classifications, addresses, and alternative names.",
+                "operationId": "getEntity",
                 "parameters": [
                     {
                         "name": "id",
@@ -184,16 +522,6 @@
                         "schema": {
                             "type": "string",
                             "format": "uuid"
-                        }
-                    },
-                    {
-                        "name": "version",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "maxLength": 20,
-                            "minLength": 0,
-                            "type": "string"
                         }
                     }
                 ],
@@ -204,16 +532,220 @@
                             "text/plain": {
                                 "schema": {
                                     "$ref": "#/components/schemas/EntityDto"
+                                },
+                                "example": {
+                                    "id": "631f4133-d4d7-467c-a090-0b4a6bf77066",
+                                    "identifiers": [
+                                        {
+                                            "source": "CompaniesHouse",
+                                            "description": "00445790"
+                                        },
+                                        {
+                                            "source": "LEI",
+                                            "description": "2138002P5RNKC5W2JZ46"
+                                        }
+                                    ],
+                                    "classifications": [
+                                        {
+                                            "system": "UK Sic 2007",
+                                            "code": "47110",
+                                            "description": "Retail sale in non-specialised stores with food, beverages or tobacco predominating"
+                                        }
+                                    ],
+                                    "registration": {
+                                        "registrationNumber": "00445790",
+                                        "jurisdiction": "GBR"
+                                    },
+                                    "myceliumBenchmark": {
+                                        "id": 5739,
+                                        "description": "Retail"
+                                    },
+                                    "primaryIndustry": {
+                                        "id": 5932,
+                                        "description": "Supermarkets, food & drugstores"
+                                    },
+                                    "interpolation": {
+                                        "id": 5964,
+                                        "description": "Consumer Staples"
+                                    },
+                                    "legalName": "Tesco PLC",
+                                    "tradingName": "Tesco PLC",
+                                    "phone": null,
+                                    "website": "www.tescoplc.com",
+                                    "description": null,
+                                    "email": null,
+                                    "addresses": [
+                                        {
+                                            "address1": "Tesco House",
+                                            "address2": "Shire Park",
+                                            "address3": "Kestrel Way",
+                                            "postTown": "Welwyn Garden City",
+                                            "countyField": "Hertfordshire",
+                                            "postCode": "AL7 1GA",
+                                            "country": "United Kingdom",
+                                            "countryCode": "GBR",
+                                            "addressType": "Registered"
+                                        }
+                                    ],
+                                    "otherNames": null,
+                                    "slug": "tesco-plc",
+                                    "canonicalSlug": "tesco-plc",
+                                    "sbti": {
+                                        "nearTermStatus": "Targets set",
+                                        "nearTermClassification": "1.5\u00b0C",
+                                        "nearTermTargetYear": 2032,
+                                        "longTermStatus": "Targets set",
+                                        "longTermTargetYear": 2050,
+                                        "netZeroStatus": "Targets set",
+                                        "netZeroYear": 2050,
+                                        "dateUpdated": null
+                                    }
                                 }
                             },
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/EntityDto"
+                                },
+                                "example": {
+                                    "id": "631f4133-d4d7-467c-a090-0b4a6bf77066",
+                                    "identifiers": [
+                                        {
+                                            "source": "CompaniesHouse",
+                                            "description": "00445790"
+                                        },
+                                        {
+                                            "source": "LEI",
+                                            "description": "2138002P5RNKC5W2JZ46"
+                                        }
+                                    ],
+                                    "classifications": [
+                                        {
+                                            "system": "UK Sic 2007",
+                                            "code": "47110",
+                                            "description": "Retail sale in non-specialised stores with food, beverages or tobacco predominating"
+                                        }
+                                    ],
+                                    "registration": {
+                                        "registrationNumber": "00445790",
+                                        "jurisdiction": "GBR"
+                                    },
+                                    "myceliumBenchmark": {
+                                        "id": 5739,
+                                        "description": "Retail"
+                                    },
+                                    "primaryIndustry": {
+                                        "id": 5932,
+                                        "description": "Supermarkets, food & drugstores"
+                                    },
+                                    "interpolation": {
+                                        "id": 5964,
+                                        "description": "Consumer Staples"
+                                    },
+                                    "legalName": "Tesco PLC",
+                                    "tradingName": "Tesco PLC",
+                                    "phone": null,
+                                    "website": "www.tescoplc.com",
+                                    "description": null,
+                                    "email": null,
+                                    "addresses": [
+                                        {
+                                            "address1": "Tesco House",
+                                            "address2": "Shire Park",
+                                            "address3": "Kestrel Way",
+                                            "postTown": "Welwyn Garden City",
+                                            "countyField": "Hertfordshire",
+                                            "postCode": "AL7 1GA",
+                                            "country": "United Kingdom",
+                                            "countryCode": "GBR",
+                                            "addressType": "Registered"
+                                        }
+                                    ],
+                                    "otherNames": null,
+                                    "slug": "tesco-plc",
+                                    "canonicalSlug": "tesco-plc",
+                                    "sbti": {
+                                        "nearTermStatus": "Targets set",
+                                        "nearTermClassification": "1.5\u00b0C",
+                                        "nearTermTargetYear": 2032,
+                                        "longTermStatus": "Targets set",
+                                        "longTermTargetYear": 2050,
+                                        "netZeroStatus": "Targets set",
+                                        "netZeroYear": 2050,
+                                        "dateUpdated": null
+                                    }
                                 }
                             },
                             "text/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/EntityDto"
+                                },
+                                "example": {
+                                    "id": "631f4133-d4d7-467c-a090-0b4a6bf77066",
+                                    "identifiers": [
+                                        {
+                                            "source": "CompaniesHouse",
+                                            "description": "00445790"
+                                        },
+                                        {
+                                            "source": "LEI",
+                                            "description": "2138002P5RNKC5W2JZ46"
+                                        }
+                                    ],
+                                    "classifications": [
+                                        {
+                                            "system": "UK Sic 2007",
+                                            "code": "47110",
+                                            "description": "Retail sale in non-specialised stores with food, beverages or tobacco predominating"
+                                        }
+                                    ],
+                                    "registration": {
+                                        "registrationNumber": "00445790",
+                                        "jurisdiction": "GBR"
+                                    },
+                                    "myceliumBenchmark": {
+                                        "id": 5739,
+                                        "description": "Retail"
+                                    },
+                                    "primaryIndustry": {
+                                        "id": 5932,
+                                        "description": "Supermarkets, food & drugstores"
+                                    },
+                                    "interpolation": {
+                                        "id": 5964,
+                                        "description": "Consumer Staples"
+                                    },
+                                    "legalName": "Tesco PLC",
+                                    "tradingName": "Tesco PLC",
+                                    "phone": null,
+                                    "website": "www.tescoplc.com",
+                                    "description": null,
+                                    "email": null,
+                                    "addresses": [
+                                        {
+                                            "address1": "Tesco House",
+                                            "address2": "Shire Park",
+                                            "address3": "Kestrel Way",
+                                            "postTown": "Welwyn Garden City",
+                                            "countyField": "Hertfordshire",
+                                            "postCode": "AL7 1GA",
+                                            "country": "United Kingdom",
+                                            "countryCode": "GBR",
+                                            "addressType": "Registered"
+                                        }
+                                    ],
+                                    "otherNames": null,
+                                    "slug": "tesco-plc",
+                                    "canonicalSlug": "tesco-plc",
+                                    "sbti": {
+                                        "nearTermStatus": "Targets set",
+                                        "nearTermClassification": "1.5\u00b0C",
+                                        "nearTermTargetYear": 2032,
+                                        "longTermStatus": "Targets set",
+                                        "longTermTargetYear": 2050,
+                                        "netZeroStatus": "Targets set",
+                                        "netZeroYear": 2050,
+                                        "dateUpdated": null
+                                    }
                                 }
                             }
                         }
@@ -261,11 +793,14 @@
                 }
             }
         },
-        "/v{version}/Entities/search": {
+        "/v1/entities/search": {
             "get": {
                 "tags": [
                     "Entities"
                 ],
+                "summary": "Search for entities",
+                "description": "Search the entity register by name, LEI, ISIN, BIC, registration number, country code, or industry classification. Returns a paged list of lightweight entity summaries; use a result's `id` with the other endpoints to retrieve the full profile and its disclosures.",
+                "operationId": "searchEntities",
                 "parameters": [
                     {
                         "name": "LEI",
@@ -374,16 +909,6 @@
                             "type": "integer",
                             "format": "int32"
                         }
-                    },
-                    {
-                        "name": "version",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "maxLength": 20,
-                            "minLength": 0,
-                            "type": "string"
-                        }
                     }
                 ],
                 "responses": {
@@ -393,16 +918,124 @@
                             "text/plain": {
                                 "schema": {
                                     "$ref": "#/components/schemas/PagedResponseDtoOfEntitySummaryDto"
+                                },
+                                "example": {
+                                    "total": 66,
+                                    "page": 0,
+                                    "pageSize": 1,
+                                    "results": [
+                                        {
+                                            "id": "631f4133-d4d7-467c-a090-0b4a6bf77066",
+                                            "legalName": "Tesco PLC",
+                                            "tradingName": "Tesco PLC",
+                                            "registration": {
+                                                "registrationNumber": "00445790",
+                                                "jurisdiction": "GBR"
+                                            },
+                                            "website": "www.tescoplc.com",
+                                            "lei": "2138002P5RNKC5W2JZ46",
+                                            "isin": null,
+                                            "bic": null,
+                                            "myceliumScore": 2.76,
+                                            "intensity": {
+                                                "totalReported": 1.0372307054,
+                                                "totalModelled": 1.0936067054,
+                                                "upstreamReported": 0.594967132,
+                                                "upstreamModelled": 0.640067932,
+                                                "scope1And2Reported": 0.0115556096,
+                                                "scope1And2Modelled": 0.0115556096
+                                            },
+                                            "classifications": [
+                                                {
+                                                    "system": "PrimaryIndustry",
+                                                    "code": "157",
+                                                    "description": "Supermarkets, food & drugstores"
+                                                }
+                                            ]
+                                        }
+                                    ]
                                 }
                             },
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/PagedResponseDtoOfEntitySummaryDto"
+                                },
+                                "example": {
+                                    "total": 66,
+                                    "page": 0,
+                                    "pageSize": 1,
+                                    "results": [
+                                        {
+                                            "id": "631f4133-d4d7-467c-a090-0b4a6bf77066",
+                                            "legalName": "Tesco PLC",
+                                            "tradingName": "Tesco PLC",
+                                            "registration": {
+                                                "registrationNumber": "00445790",
+                                                "jurisdiction": "GBR"
+                                            },
+                                            "website": "www.tescoplc.com",
+                                            "lei": "2138002P5RNKC5W2JZ46",
+                                            "isin": null,
+                                            "bic": null,
+                                            "myceliumScore": 2.76,
+                                            "intensity": {
+                                                "totalReported": 1.0372307054,
+                                                "totalModelled": 1.0936067054,
+                                                "upstreamReported": 0.594967132,
+                                                "upstreamModelled": 0.640067932,
+                                                "scope1And2Reported": 0.0115556096,
+                                                "scope1And2Modelled": 0.0115556096
+                                            },
+                                            "classifications": [
+                                                {
+                                                    "system": "PrimaryIndustry",
+                                                    "code": "157",
+                                                    "description": "Supermarkets, food & drugstores"
+                                                }
+                                            ]
+                                        }
+                                    ]
                                 }
                             },
                             "text/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/PagedResponseDtoOfEntitySummaryDto"
+                                },
+                                "example": {
+                                    "total": 66,
+                                    "page": 0,
+                                    "pageSize": 1,
+                                    "results": [
+                                        {
+                                            "id": "631f4133-d4d7-467c-a090-0b4a6bf77066",
+                                            "legalName": "Tesco PLC",
+                                            "tradingName": "Tesco PLC",
+                                            "registration": {
+                                                "registrationNumber": "00445790",
+                                                "jurisdiction": "GBR"
+                                            },
+                                            "website": "www.tescoplc.com",
+                                            "lei": "2138002P5RNKC5W2JZ46",
+                                            "isin": null,
+                                            "bic": null,
+                                            "myceliumScore": 2.76,
+                                            "intensity": {
+                                                "totalReported": 1.0372307054,
+                                                "totalModelled": 1.0936067054,
+                                                "upstreamReported": 0.594967132,
+                                                "upstreamModelled": 0.640067932,
+                                                "scope1And2Reported": 0.0115556096,
+                                                "scope1And2Modelled": 0.0115556096
+                                            },
+                                            "classifications": [
+                                                {
+                                                    "system": "PrimaryIndustry",
+                                                    "code": "157",
+                                                    "description": "Supermarkets, food & drugstores"
+                                                }
+                                            ]
+                                        }
+                                    ]
                                 }
                             }
                         }
@@ -430,11 +1063,14 @@
                 }
             }
         },
-        "/v{version}/Entities/{id}/disclosures": {
+        "/v1/entities/{id}/disclosures": {
             "get": {
                 "tags": [
                     "Entities"
                 ],
+                "summary": "List an entity's disclosures",
+                "description": "Retrieve the carbon emissions disclosures for one entity by its public id, optionally filtered by reporting year. Returns a paged list; each disclosure carries its per-scope emission lines in kgCO2e.",
+                "operationId": "getEntityDisclosures",
                 "parameters": [
                     {
                         "name": "id",
@@ -474,16 +1110,6 @@
                             "type": "integer",
                             "format": "int32"
                         }
-                    },
-                    {
-                        "name": "version",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "maxLength": 20,
-                            "minLength": 0,
-                            "type": "string"
-                        }
                     }
                 ],
                 "responses": {
@@ -493,16 +1119,346 @@
                             "text/plain": {
                                 "schema": {
                                     "$ref": "#/components/schemas/PagedResponseDtoOfDisclosureDto"
+                                },
+                                "example": {
+                                    "total": 1,
+                                    "page": 0,
+                                    "pageSize": 1,
+                                    "results": [
+                                        {
+                                            "id": "1184f592-31cc-4251-a955-56afc9cf8748",
+                                            "year": 2025,
+                                            "isUnderReview": false,
+                                            "score": {
+                                                "transparency": 91.96,
+                                                "benchmark": 2.76,
+                                                "intesity": 1.0936067054,
+                                                "industry": null,
+                                                "revenue": 69916000000,
+                                                "employees": 336440
+                                            },
+                                            "revenue": {
+                                                "value": 69916000000,
+                                                "year": 2025,
+                                                "currency": "GBP"
+                                            },
+                                            "employees": {
+                                                "value": 336440,
+                                                "year": 2025
+                                            },
+                                            "total": {
+                                                "value": 72519022000,
+                                                "fromFilling": 73101320000,
+                                                "reported": null,
+                                                "estimated": 3941584416,
+                                                "derived": null
+                                            },
+                                            "unit": "kgCO2e",
+                                            "sourceType": "FromFilling",
+                                            "createdAt": "06/18/2026 22:51:46",
+                                            "updatedAt": "08/15/2026 00:06:10",
+                                            "emissions": [
+                                                {
+                                                    "scope": "Scope1",
+                                                    "aspect": "NotDefined",
+                                                    "basis": "FromFilling",
+                                                    "methodology": "NotDefined",
+                                                    "amount": 802425000
+                                                },
+                                                {
+                                                    "scope": "Scope2",
+                                                    "aspect": "NotDefined",
+                                                    "basis": "FromFilling",
+                                                    "methodology": "MarketBased",
+                                                    "amount": 5497000
+                                                },
+                                                {
+                                                    "scope": "Scope2",
+                                                    "aspect": "NotDefined",
+                                                    "basis": "FromFilling",
+                                                    "methodology": "LocationBased",
+                                                    "amount": 582298000
+                                                },
+                                                {
+                                                    "scope": "Scope3",
+                                                    "aspect": "PurchasedGoodsAndServices",
+                                                    "basis": "FromFilling",
+                                                    "methodology": "NotDefined",
+                                                    "amount": 35307300000
+                                                },
+                                                {
+                                                    "scope": "Scope3",
+                                                    "aspect": "UseOfSoldProducts",
+                                                    "basis": "FromFilling",
+                                                    "methodology": "NotDefined",
+                                                    "amount": 25438800000
+                                                }
+                                            ],
+                                            "intensities": [
+                                                {
+                                                    "type": "TotalReported",
+                                                    "value": 1.0372307054,
+                                                    "emissions": 72519022000,
+                                                    "revenue": 69916000000,
+                                                    "revenueYear": 2025
+                                                },
+                                                {
+                                                    "type": "TotalModelled",
+                                                    "value": 1.0936067054,
+                                                    "emissions": 76460606416,
+                                                    "revenue": 69916000000,
+                                                    "revenueYear": 2025
+                                                }
+                                            ],
+                                            "sourceDocumentUrl": null,
+                                            "sourceDocumentPath": null,
+                                            "sourceReportId": null,
+                                            "sourceDocumentType": null,
+                                            "sourceDocumentPages": null,
+                                            "reportedBy": null,
+                                            "netZeroTargetYear": null,
+                                            "nearTermTargetYear": null,
+                                            "nearTermReductionPercent": null,
+                                            "nearTermBaselineYear": null,
+                                            "hasVerifiedAudit": null,
+                                            "auditorName": null,
+                                            "assuranceLevel": null,
+                                            "isSharedSource": false,
+                                            "sharedSourceEntity": null,
+                                            "visibility": "Public",
+                                            "scope3DetailMode": "full"
+                                        }
+                                    ]
                                 }
                             },
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/PagedResponseDtoOfDisclosureDto"
+                                },
+                                "example": {
+                                    "total": 1,
+                                    "page": 0,
+                                    "pageSize": 1,
+                                    "results": [
+                                        {
+                                            "id": "1184f592-31cc-4251-a955-56afc9cf8748",
+                                            "year": 2025,
+                                            "isUnderReview": false,
+                                            "score": {
+                                                "transparency": 91.96,
+                                                "benchmark": 2.76,
+                                                "intesity": 1.0936067054,
+                                                "industry": null,
+                                                "revenue": 69916000000,
+                                                "employees": 336440
+                                            },
+                                            "revenue": {
+                                                "value": 69916000000,
+                                                "year": 2025,
+                                                "currency": "GBP"
+                                            },
+                                            "employees": {
+                                                "value": 336440,
+                                                "year": 2025
+                                            },
+                                            "total": {
+                                                "value": 72519022000,
+                                                "fromFilling": 73101320000,
+                                                "reported": null,
+                                                "estimated": 3941584416,
+                                                "derived": null
+                                            },
+                                            "unit": "kgCO2e",
+                                            "sourceType": "FromFilling",
+                                            "createdAt": "06/18/2026 22:51:46",
+                                            "updatedAt": "08/15/2026 00:06:10",
+                                            "emissions": [
+                                                {
+                                                    "scope": "Scope1",
+                                                    "aspect": "NotDefined",
+                                                    "basis": "FromFilling",
+                                                    "methodology": "NotDefined",
+                                                    "amount": 802425000
+                                                },
+                                                {
+                                                    "scope": "Scope2",
+                                                    "aspect": "NotDefined",
+                                                    "basis": "FromFilling",
+                                                    "methodology": "MarketBased",
+                                                    "amount": 5497000
+                                                },
+                                                {
+                                                    "scope": "Scope2",
+                                                    "aspect": "NotDefined",
+                                                    "basis": "FromFilling",
+                                                    "methodology": "LocationBased",
+                                                    "amount": 582298000
+                                                },
+                                                {
+                                                    "scope": "Scope3",
+                                                    "aspect": "PurchasedGoodsAndServices",
+                                                    "basis": "FromFilling",
+                                                    "methodology": "NotDefined",
+                                                    "amount": 35307300000
+                                                },
+                                                {
+                                                    "scope": "Scope3",
+                                                    "aspect": "UseOfSoldProducts",
+                                                    "basis": "FromFilling",
+                                                    "methodology": "NotDefined",
+                                                    "amount": 25438800000
+                                                }
+                                            ],
+                                            "intensities": [
+                                                {
+                                                    "type": "TotalReported",
+                                                    "value": 1.0372307054,
+                                                    "emissions": 72519022000,
+                                                    "revenue": 69916000000,
+                                                    "revenueYear": 2025
+                                                },
+                                                {
+                                                    "type": "TotalModelled",
+                                                    "value": 1.0936067054,
+                                                    "emissions": 76460606416,
+                                                    "revenue": 69916000000,
+                                                    "revenueYear": 2025
+                                                }
+                                            ],
+                                            "sourceDocumentUrl": null,
+                                            "sourceDocumentPath": null,
+                                            "sourceReportId": null,
+                                            "sourceDocumentType": null,
+                                            "sourceDocumentPages": null,
+                                            "reportedBy": null,
+                                            "netZeroTargetYear": null,
+                                            "nearTermTargetYear": null,
+                                            "nearTermReductionPercent": null,
+                                            "nearTermBaselineYear": null,
+                                            "hasVerifiedAudit": null,
+                                            "auditorName": null,
+                                            "assuranceLevel": null,
+                                            "isSharedSource": false,
+                                            "sharedSourceEntity": null,
+                                            "visibility": "Public",
+                                            "scope3DetailMode": "full"
+                                        }
+                                    ]
                                 }
                             },
                             "text/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/PagedResponseDtoOfDisclosureDto"
+                                },
+                                "example": {
+                                    "total": 1,
+                                    "page": 0,
+                                    "pageSize": 1,
+                                    "results": [
+                                        {
+                                            "id": "1184f592-31cc-4251-a955-56afc9cf8748",
+                                            "year": 2025,
+                                            "isUnderReview": false,
+                                            "score": {
+                                                "transparency": 91.96,
+                                                "benchmark": 2.76,
+                                                "intesity": 1.0936067054,
+                                                "industry": null,
+                                                "revenue": 69916000000,
+                                                "employees": 336440
+                                            },
+                                            "revenue": {
+                                                "value": 69916000000,
+                                                "year": 2025,
+                                                "currency": "GBP"
+                                            },
+                                            "employees": {
+                                                "value": 336440,
+                                                "year": 2025
+                                            },
+                                            "total": {
+                                                "value": 72519022000,
+                                                "fromFilling": 73101320000,
+                                                "reported": null,
+                                                "estimated": 3941584416,
+                                                "derived": null
+                                            },
+                                            "unit": "kgCO2e",
+                                            "sourceType": "FromFilling",
+                                            "createdAt": "06/18/2026 22:51:46",
+                                            "updatedAt": "08/15/2026 00:06:10",
+                                            "emissions": [
+                                                {
+                                                    "scope": "Scope1",
+                                                    "aspect": "NotDefined",
+                                                    "basis": "FromFilling",
+                                                    "methodology": "NotDefined",
+                                                    "amount": 802425000
+                                                },
+                                                {
+                                                    "scope": "Scope2",
+                                                    "aspect": "NotDefined",
+                                                    "basis": "FromFilling",
+                                                    "methodology": "MarketBased",
+                                                    "amount": 5497000
+                                                },
+                                                {
+                                                    "scope": "Scope2",
+                                                    "aspect": "NotDefined",
+                                                    "basis": "FromFilling",
+                                                    "methodology": "LocationBased",
+                                                    "amount": 582298000
+                                                },
+                                                {
+                                                    "scope": "Scope3",
+                                                    "aspect": "PurchasedGoodsAndServices",
+                                                    "basis": "FromFilling",
+                                                    "methodology": "NotDefined",
+                                                    "amount": 35307300000
+                                                },
+                                                {
+                                                    "scope": "Scope3",
+                                                    "aspect": "UseOfSoldProducts",
+                                                    "basis": "FromFilling",
+                                                    "methodology": "NotDefined",
+                                                    "amount": 25438800000
+                                                }
+                                            ],
+                                            "intensities": [
+                                                {
+                                                    "type": "TotalReported",
+                                                    "value": 1.0372307054,
+                                                    "emissions": 72519022000,
+                                                    "revenue": 69916000000,
+                                                    "revenueYear": 2025
+                                                },
+                                                {
+                                                    "type": "TotalModelled",
+                                                    "value": 1.0936067054,
+                                                    "emissions": 76460606416,
+                                                    "revenue": 69916000000,
+                                                    "revenueYear": 2025
+                                                }
+                                            ],
+                                            "sourceDocumentUrl": null,
+                                            "sourceDocumentPath": null,
+                                            "sourceReportId": null,
+                                            "sourceDocumentType": null,
+                                            "sourceDocumentPages": null,
+                                            "reportedBy": null,
+                                            "netZeroTargetYear": null,
+                                            "nearTermTargetYear": null,
+                                            "nearTermReductionPercent": null,
+                                            "nearTermBaselineYear": null,
+                                            "hasVerifiedAudit": null,
+                                            "auditorName": null,
+                                            "assuranceLevel": null,
+                                            "isSharedSource": false,
+                                            "sharedSourceEntity": null,
+                                            "visibility": "Public",
+                                            "scope3DetailMode": "full"
+                                        }
+                                    ]
                                 }
                             }
                         }
@@ -668,23 +1624,21 @@
                 },
                 "nullable": true
             },
+            "DisclosureCountDto": {
+                "type": "object",
+                "properties": {
+                    "count": {
+                        "type": "integer",
+                        "format": "int32"
+                    }
+                }
+            },
             "DisclosureDto": {
                 "type": "object",
                 "properties": {
                     "id": {
-                        "type": "integer",
-                        "format": "int32"
-                    },
-                    "publicId": {
                         "type": "string",
                         "format": "uuid"
-                    },
-                    "scoringInputsChanged": {
-                        "type": "boolean"
-                    },
-                    "entityId": {
-                        "type": "integer",
-                        "format": "int32"
                     },
                     "year": {
                         "type": "integer",
@@ -719,11 +1673,6 @@
                     "updatedAt": {
                         "type": "string",
                         "format": "date-time",
-                        "nullable": true
-                    },
-                    "sourceId": {
-                        "type": "integer",
-                        "format": "int32",
                         "nullable": true
                     },
                     "emissions": {
@@ -807,15 +1756,6 @@
                     "visibility": {
                         "$ref": "#/components/schemas/DisclosureVisibility"
                     },
-                    "privateToOrganisationId": {
-                        "type": "integer",
-                        "format": "int32",
-                        "nullable": true
-                    },
-                    "privateToOrganisationIds": {
-                        "type": "string",
-                        "nullable": true
-                    },
                     "scope3DetailMode": {
                         "type": "string"
                     }
@@ -824,10 +1764,6 @@
             "DisclosureEmissionDto": {
                 "type": "object",
                 "properties": {
-                    "id": {
-                        "type": "integer",
-                        "format": "int32"
-                    },
                     "scope": {
                         "$ref": "#/components/schemas/Scopes"
                     },
@@ -843,11 +1779,6 @@
                     "amount": {
                         "type": "number",
                         "format": "double"
-                    },
-                    "sourcePage": {
-                        "type": "integer",
-                        "format": "int32",
-                        "nullable": true
                     }
                 }
             },
@@ -1035,10 +1966,6 @@
                 "type": "object",
                 "properties": {
                     "id": {
-                        "type": "integer",
-                        "format": "int32"
-                    },
-                    "publicId": {
                         "type": "string",
                         "format": "uuid"
                     },
@@ -1173,10 +2100,6 @@
                 "type": "object",
                 "properties": {
                     "id": {
-                        "type": "integer",
-                        "format": "int32"
-                    },
-                    "publicId": {
                         "type": "string",
                         "format": "uuid"
                     },
@@ -1228,10 +2151,6 @@
                 "type": "object",
                 "properties": {
                     "id": {
-                        "type": "integer",
-                        "format": "int32"
-                    },
-                    "publicId": {
                         "type": "string",
                         "format": "uuid"
                     },
