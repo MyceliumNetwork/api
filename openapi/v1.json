@@ -899,6 +899,9 @@
                         "type": "string",
                         "nullable": true
                     },
+                    "sourceDocumentIsExternal": {
+                        "type": "boolean"
+                    },
                     "sourceDocumentPath": {
                         "type": "string",
                         "nullable": true
@@ -915,6 +918,13 @@
                         "type": "array",
                         "items": {
                             "$ref": "#/components/schemas/DisclosureSourcePageDto"
+                        },
+                        "nullable": true
+                    },
+                    "supportingDocuments": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/DisclosureSupportingDocumentDto"
                         },
                         "nullable": true
                     },
@@ -1098,6 +1108,24 @@
                     "Submitted"
                 ],
                 "type": "string"
+            },
+            "DisclosureSupportingDocumentDto": {
+                "type": "object",
+                "properties": {
+                    "reportId": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "url": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "$ref": "#/components/schemas/ReportType"
+                    },
+                    "isExternal": {
+                        "type": "boolean"
+                    }
+                }
             },
             "DisclosureTotalDto": {
                 "type": "object",
@@ -1569,6 +1597,21 @@
                         "nullable": true
                     }
                 }
+            },
+            "ReportType": {
+                "enum": [
+                    "Sustainability",
+                    "Cdp",
+                    "Esg",
+                    "Environmental",
+                    "Responsibility",
+                    "Annual",
+                    "Financial",
+                    "CarbonReductionPlan",
+                    "Unknown",
+                    "Other"
+                ],
+                "type": "string"
             },
             "RevenueFirmographicDto": {
                 "type": "object",
