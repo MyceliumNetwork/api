@@ -1161,7 +1161,8 @@
             "DisclosureVisibility": {
                 "enum": [
                     "Public",
-                    "PrivateToRequester"
+                    "PrivateToRequester",
+                    "Quarantined"
                 ],
                 "type": "string"
             },
