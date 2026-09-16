@@ -951,6 +951,51 @@
                         "format": "int32",
                         "nullable": true
                     },
+                    "scope1TargetYear": {
+                        "type": "integer",
+                        "format": "int32",
+                        "nullable": true
+                    },
+                    "scope1ReductionPercent": {
+                        "type": "number",
+                        "format": "double",
+                        "nullable": true
+                    },
+                    "scope1BaselineYear": {
+                        "type": "integer",
+                        "format": "int32",
+                        "nullable": true
+                    },
+                    "scope2TargetYear": {
+                        "type": "integer",
+                        "format": "int32",
+                        "nullable": true
+                    },
+                    "scope2ReductionPercent": {
+                        "type": "number",
+                        "format": "double",
+                        "nullable": true
+                    },
+                    "scope2BaselineYear": {
+                        "type": "integer",
+                        "format": "int32",
+                        "nullable": true
+                    },
+                    "scope3TargetYear": {
+                        "type": "integer",
+                        "format": "int32",
+                        "nullable": true
+                    },
+                    "scope3ReductionPercent": {
+                        "type": "number",
+                        "format": "double",
+                        "nullable": true
+                    },
+                    "scope3BaselineYear": {
+                        "type": "integer",
+                        "format": "int32",
+                        "nullable": true
+                    },
                     "hasVerifiedAudit": {
                         "type": "boolean",
                         "nullable": true
