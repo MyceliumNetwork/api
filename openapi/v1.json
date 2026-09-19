@@ -869,6 +869,19 @@
                         "type": "string",
                         "nullable": true
                     },
+                    "reportingPeriodStart": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "reportingPeriodEnd": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "reportingBasis": {
+                        "$ref": "#/components/schemas/ReportingBases"
+                    },
                     "sourceType": {
                         "$ref": "#/components/schemas/DisclosureSourceType"
                     },
@@ -1643,6 +1656,15 @@
                         "nullable": true
                     }
                 }
+            },
+            "ReportingBases": {
+                "enum": [
+                    "NotStated",
+                    "Financial",
+                    "Calendar",
+                    "PartYear"
+                ],
+                "type": "string"
             },
             "ReportType": {
                 "enum": [
