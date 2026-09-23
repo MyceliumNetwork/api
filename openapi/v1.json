@@ -1032,6 +1032,9 @@
                     },
                     "scope3DetailMode": {
                         "type": "string"
+                    },
+                    "sourceVerification": {
+                        "$ref": "#/components/schemas/DisclosureSourceVerificationDto"
                     }
                 }
             },
@@ -1166,6 +1169,34 @@
                     "Submitted"
                 ],
                 "type": "string"
+            },
+            "DisclosureSourceVerificationDto": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "$ref": "#/components/schemas/SourceVerificationStatus"
+                    },
+                    "checkedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "verifiedPages": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "checkedPages": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "failedScopes": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer",
+                            "format": "int32"
+                        }
+                    }
+                },
+                "nullable": true
             },
             "DisclosureSupportingDocumentDto": {
                 "type": "object",
@@ -1548,6 +1579,7 @@
                     "Annual",
                     "Financial",
                     "CarbonReductionPlan",
+                    "StatutoryAccounts",
                     "Unknown",
                     "Other"
                 ],
@@ -1676,6 +1708,7 @@
                     "Annual",
                     "Financial",
                     "CarbonReductionPlan",
+                    "StatutoryAccounts",
                     "Unknown",
                     "Other"
                 ],
@@ -1748,6 +1781,16 @@
                     "Scope2",
                     "Scope3",
                     "Other"
+                ],
+                "type": "string"
+            },
+            "SourceVerificationStatus": {
+                "enum": [
+                    "None",
+                    "Verified",
+                    "Mismatch",
+                    "RelativeOnly",
+                    "Unverifiable"
                 ],
                 "type": "string"
             }
